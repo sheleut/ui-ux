@@ -1,0 +1,115 @@
+body {
+	background-color: black;
+}
+
+.App {
+    color: white;
+}
+
+.grid {
+    background-color: black;
+	display: flex;
+    flex-wrap: wrap;
+    width: 560px;
+    height: 560px;
+    border: solid black;
+}
+  
+.grid div {
+    width: 20px;
+    height: 20px;
+}
+
+.pac-dot {
+    background-color: black;
+    position: relative;
+}
+
+.pac-dot::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ffd966;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+.wall {
+    background-color: #1e4cb5;
+}
+
+.ghost-lair {
+    background-color: #3a3a3a;
+}
+
+.power-pellet {
+    background-color: black;
+    position: relative;
+}
+
+.power-pellet::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ffd966;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+}
+
+.bonus {
+    background-image: url('images/bonusdot.jpg');
+    background-size: cover;
+}
+
+
+.blinky {
+    background-image: url('images/ghostGreen.png');
+    background-size: cover;
+}
+
+.pinky {
+    background-image: url('images/ghostRed.png');
+    background-size: cover;
+}
+
+.inky {
+    background-image: url('images/ghostYellow.png');
+    background-size: cover;
+}
+
+.clyde {
+   background-image: url('images/ghostYellow.png');
+   background-size: cover;     
+}
+
+.pac-man {
+    background-color: yellow;
+    border-radius: 10px;
+    position: relative;
+	clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%);
+    animation: chomping 0.5s infinite;
+	transition: transform 0.2s ease;
+    transform: rotate(180deg); /* Startet nach rechts gerichtet */
+}
+
+@keyframes chomping {
+    0% {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%);
+    }
+    50% {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+    100% {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%);
+    }
+}
+
+
+
+.scared-ghost {
+    background-color: aquamarine;
+}
