@@ -5,7 +5,10 @@ import { InfoPage } from "./components/InfoPage";
 import { HomePage } from "./components/HomePage";
 import { CustomerList } from "./components/CustomerList";
 import { CustomerForm } from "./components/CustomerForm";
-import { TabList, Tab } from "@fluentui/react-components";
+import {
+  TabList, Tab, Dialog, DialogSurface, DialogBody, DialogTitle,
+  DialogContent, DialogActions, Button,
+} from "@fluentui/react-components";
 
 type Screen = "home" | "list" | "form" | "about";
 
@@ -74,6 +77,8 @@ export default function App() {
     setScreen("form");
   };
 
+  const [deleteCandidate, setDeleteCandidate] = useState<Customer | null>(null);
+
   const removeCustomer = (id: number) => {
     setCustomers((list) => list.filter((c) => c.id !== id));
   };
@@ -128,7 +133,10 @@ export default function App() {
           filterStatus={filterStatus}
           onFilterChange={setFilterStatus}
           onEdit={startEdit}
-          onDelete={removeCustomer}
+          onDelete={(id) => {
+            const c = customers.find((x) => x.id === id);
+              if (c) setDeleteCandidate(c);
+          }}                                             
           onNewCustomer={() => { setForm(emptyForm); setEditId(null); setScreen("form"); }}
         />
       )}
@@ -148,6 +156,34 @@ export default function App() {
 <footer className="footer">
   <p className="footer-note">© 2026 Kundenverwaltung</p>
 </footer>
+  <Dialog
+  open={deleteCandidate !== null}
+  onOpenChange={(_, data) => { if (!data.open) setDeleteCandidate(null); }}
+>
+  <DialogSurface>
+    <DialogBody>
+      <DialogTitle>Kunde löschen?</DialogTitle>
+      <DialogContent>
+        Möchten Sie „{deleteCandidate?.name}" wirklich löschen? Diese Aktion
+        kann nicht rückgängig gemacht werden.
+      </DialogContent>
+      <DialogActions>
+        <Button appearance="secondary" onClick={() => setDeleteCandidate(null)}>
+          Abbrechen
+        </Button>
+        <Button
+          appearance="primary"
+          onClick={() => {
+            if (deleteCandidate) removeCustomer(deleteCandidate.id);
+            setDeleteCandidate(null);
+          }}
+        >
+          Löschen
+        </Button>
+      </DialogActions>
+    </DialogBody>
+  </DialogSurface>
+</Dialog>
     </div>
   );
 }
