@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Customer } from "./types";
 import { initialCustomers } from "./data";
+import { InfoPage } from "./components/InfoPage";
 
 type Screen = "home" | "list" | "form" | "about";
 
@@ -142,18 +143,7 @@ export default function App() {
         </section>
       )}
 
-      {screen === "about" && (
-        <section className="block">
-          <h2>Info</h2>
-          <p>Internes Tool. Keine Hilfe verfügbar.</p>
-          <p>
-            <a href="#">Dokumentation</a> (404)
-          </p>
-          <span className="nav-link" onClick={() => setScreen("home")}>
-            zurück
-          </span>
-        </section>
-      )}
+      {screen === "about" && <InfoPage onBvisack={() => setScreen("home")} />}
 
       {screen === "list" && (
         <section className="block list-block">

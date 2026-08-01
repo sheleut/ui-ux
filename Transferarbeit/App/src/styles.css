@@ -104,30 +104,6 @@ a.nav-link {
   max-width: 420px;
 }
 
-input,
-textarea,
-select,
-button {
-  font-family: inherit;
-  font-size: 12px;
-}
-
-input,
-textarea,
-select {
-  border: 1px solid #ccc;
-  padding: 4px 6px;
-  width: 100%;
-  max-width: 280px;
-}
-
-input:focus,
-textarea:focus,
-select:focus,
-button:focus {
-  outline: none;
-}
-
 .fake-btn {
   display: inline-block;
   color: blue;
