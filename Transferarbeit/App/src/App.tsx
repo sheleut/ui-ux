@@ -2,6 +2,9 @@ import { useState } from "react";
 import type { Customer } from "./types";
 import { initialCustomers } from "./data";
 import { InfoPage } from "./components/InfoPage";
+import { HomePage } from "./components/HomePage";
+import { CustomerList } from "./components/CustomerList";
+import { CustomerForm } from "./components/CustomerForm";
 
 type Screen = "home" | "list" | "form" | "about";
 
@@ -125,186 +128,39 @@ export default function App() {
       </div>
 
       {screen === "home" && (
-        <section className="block">
-          <h1>Willkommen</h1>
-          <p>
-            System für Kunden. Bitte Bereich wählen. Die Tabelle finden Sie nicht
-            auf dieser Seite.
-          </p>
-          <input placeholder="Schnellsuche (noch nicht aktiv)" />
-          <br />
-          <br />
-          <span className="fake-btn" onClick={() => setScreen("form")}>
-            Neuen Kunden
-          </span>
-          <span className="fake-btn" onClick={() => setScreen("list")}>
-            Zur Übersicht
-          </span>
-        </section>
+        <HomePage 
+          onShowList={() => setScreen("list")}
+          onNewCustomer={() => {
+            setForm(emptyForm); 
+            setEditId(null);
+            setScreen("form");
+          }}
+          />
       )}
 
-      {screen === "about" && <InfoPage onBvisack={() => setScreen("home")} />}
+      {screen === "about" && <InfoPage onBack={() => setScreen("home")} />}
 
       {screen === "list" && (
-        <section className="block list-block">
-          <h2>Übersicht</h2>
-
-          <div className="toolbar messy">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="suchen"
-            />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              title=""
-            >
-              <option value="alle">alle</option>
-              <option value="mit">mit Notiz</option>
-              <option value="ohne">ohne Notiz</option>
-            </select>
-            <button type="button" className="sort-btn">
-              Sortieren
-            </button>
-            <button
-              type="button"
-              className="add-mini"
-              onClick={() => {
-                setEditId(null);
-                setForm(emptyForm);
-                setScreen("form");
-              }}
-            >
-              +
-            </button>
-          </div>
-
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Info</th>
-                <th>K1</th>
-                <th>K2</th>
-                <th>Extra</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((c) => (
-                <tr key={c.id}>
-                  <td>{c.id}</td>
-                  <td>{c.name}</td>
-                  <td>{c.email}</td>
-                  <td>{c.phone || "—"}</td>
-                  <td>{c.company}</td>
-                  <td className="actions">
-                    <span
-                      className="action"
-                      onClick={() => startEdit(c)}
-                    >
-                      ✎
-                    </span>
-                    <span
-                      className="action delete"
-                      onClick={() => removeCustomer(c.id)}
-                    >
-                      x
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {filtered.length === 0 && customers.length > 0 && (
-            <p className="empty-hint">Keine Treffer (Filter prüfen?)</p>
-          )}
-
-          <div className="below-table">
-            <span
-              className="fake-btn"
-              onClick={() => {
-                setEditId(null);
-                setForm(emptyForm);
-                setScreen("form");
-              }}
-            >
-              nochmal hinzufügen
-            </span>
-          </div>
-        </section>
+        <CustomerList
+          customers={filtered}
+          search={search}
+          onSearchChange={setSearch}
+          filterStatus={filterStatus}
+          onFilterChange={setFilterStatus}
+          onEdit={startEdit}
+          onDelete={removeCustomer}
+          onNewCustomer={() => { setForm(emptyForm); setEditId(null); setScreen("form"); }}
+        />
       )}
 
       {screen === "form" && (
-        <section className="block form-block">
-          <h2>{editId ? "Bearbeiten" : "Neu"}</h2>
-          <p className="form-hint">
-            Felder ausfüllen und unten speichern. Pflichtfelder sind nicht
-            markiert.
-          </p>
-
-          <div className="form-row">
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Name / Firma"
-            />
-            <input
-              type="text"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="Mail"
-            />
-          </div>
-          <div className="form-row">
-            <input
-              type="text"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="Tel"
-            />
-            <input
-              type="text"
-              value={form.company}
-              onChange={(e) => setForm({ ...form, company: e.target.value })}
-              placeholder="Unternehmen optional"
-            />
-          </div>
-          <textarea
-            value={form.note}
-            onChange={(e) => setForm({ ...form, note: e.target.value })}
-            placeholder="Notiz"
-            rows={2}
-          />
-
-          <div className="form-actions">
-            <span className="save-link" onClick={saveCustomer}>
-              speichern
-            </span>
-            <span
-              className="cancel-link"
-              onClick={() => {
-                setForm(emptyForm);
-                setEditId(null);
-                setScreen("list");
-              }}
-            >
-              abbrechen
-            </span>
-            <button type="button" className="ghost-btn" onClick={saveCustomer}>
-              OK
-            </button>
-          </div>
-
-          <p className="duplicate-nav">
-            <span onClick={() => setScreen("list")}>← Liste</span>
-            {" | "}
-            <span onClick={() => setScreen("home")}>Startseite</span>
-          </p>
-        </section>
+        <CustomerForm
+          form={form}
+          isEdit={editId !== null}
+          onChange={setForm}
+          onSave={saveCustomer}
+          onCancel={() => setScreen("list")}
+        />
       )}
 
       <footer className="footer">
