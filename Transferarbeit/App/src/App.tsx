@@ -5,6 +5,7 @@ import { InfoPage } from "./components/InfoPage";
 import { HomePage } from "./components/HomePage";
 import { CustomerList } from "./components/CustomerList";
 import { CustomerForm } from "./components/CustomerForm";
+import { TabList, Tab } from "@fluentui/react-components";
 
 type Screen = "home" | "list" | "form" | "about";
 
@@ -95,31 +96,14 @@ export default function App() {
       <div className="top-bar">
         <span className="logo">KV</span>
         <span className="title">Kundenverwaltung v0.1</span>
-        <span
-          className="nav-link"
-          onClick={() => setScreen("home")}
+        <TabList
+          selectedValue={screen === "form" ? "list" : screen}
+          onTabSelect={(_, data) => setScreen(data.value as Screen)}
         >
-          Start
-        </span>
-        <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setScreen("list"); }}>
-          Daten
-        </a>
-        <span
-          className="nav-link"
-          onClick={() => {
-            setEditId(null);
-            setForm(emptyForm);
-            setScreen("form");
-          }}
-        >
-          Eingabe
-        </span>
-        <button type="button" className="nav-btn" onClick={() => setScreen("about")}>
-          ?
-        </button>
-        <span className="nav-link" onClick={() => setScreen("list")}>
-          Kunden
-        </span>
+          <Tab value="home">Übersicht</Tab>
+          <Tab value="list">Kunden</Tab>
+          <Tab value="about">Info</Tab>
+        </TabList>
       </div>
 
       <div className="side-hint">
