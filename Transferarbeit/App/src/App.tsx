@@ -106,20 +106,16 @@ export default function App() {
         </TabList>
       </div>
 
-      <div className="side-hint">
-        <p>→ Hier navigieren</p>
-        <p style={{ fontSize: "9px", color: "#bbb" }}>Liste ist unter Daten</p>
-      </div>
-
+    <main style={{ maxWidth: "900px", margin: "0 auto", padding: "24px" }}>
       {screen === "home" && (
-        <HomePage 
+        <HomePage
           onShowList={() => setScreen("list")}
           onNewCustomer={() => {
-            setForm(emptyForm); 
+            setForm(emptyForm);
             setEditId(null);
             setScreen("form");
           }}
-          />
+        />
       )}
 
       {screen === "about" && <InfoPage onBack={() => setScreen("home")} />}
@@ -147,14 +143,11 @@ export default function App() {
         />
       )}
 
-      <footer className="footer">
-        <span onClick={() => setScreen("list")}>Daten</span>
-        {" · "}
-        <span onClick={() => setScreen("form")}>Eingabe</span>
-        {" · "}
-        <a href="#">Impressum</a>
-        <p className="footer-note">© 2026 — keine aktive Seite markiert</p>
-      </footer>
+    </main>
+
+<footer className="footer">
+  <p className="footer-note">© 2026 Kundenverwaltung</p>
+</footer>
     </div>
   );
 }
