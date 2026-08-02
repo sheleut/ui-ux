@@ -2,9 +2,9 @@ import type { Customer } from "../types";
 import {
     DataGrid, DataGridHeader, DataGridRow, DataGridHeaderCell,
     DataGridBody, DataGridCell, TableColumnDefinition, createTableColumn,
-    Button, Card,
+    Button, Card, CardHeader, Title2, Input, Select,
 } from "@fluentui/react-components";
-import { EditRegular, DeleteRegular} from "@fluentui/react-icons";
+import { EditRegular, DeleteRegular, AddRegular} from "@fluentui/react-icons";
 
 type CustomerListProps = {
     customers: Customer[];
@@ -78,33 +78,27 @@ export function CustomerList({
 }: CustomerListProps) {
     const columns = buildColumns(onEdit, onDelete);
     return (
-        <section className="block list-block">
-          <h2>Übersicht</h2>
+        <Card>
+          <CardHeader header={<Title2>Kunden</Title2>} />
 
-          <div className="toolbar messy">
-            <input
+        <div style={{ 
+          display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
+            <Input
               value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="suchen"
+              onChange={(_, data) => onSearchChange(data.value)}
+              placeholder="Suchen..."
             />
-            <select
+            <Select
               value={filterStatus}
-              onChange={(e) => onFilterChange(e.target.value)}
-              title=""
+              onChange={(_, data) => onFilterChange(data.value)}
             >
               <option value="alle">alle</option>
               <option value="mit">mit Notiz</option>
               <option value="ohne">ohne Notiz</option>
-            </select>
-            <button
-              type="button"
-              className="add-mini"
-              onClick={() => {
-                onNewCustomer();
-              }}
-            >
-              +
-            </button>
+            </Select>
+            <Button appearance="primary" icon={<AddRegular />} onClick={onNewCustomer}>
+                Neuer Kunde
+            </Button>
           </div>
 
 <DataGrid items={customers} columns={columns} sortable getRowId={(c) => c.id}>
@@ -127,7 +121,7 @@ export function CustomerList({
           {customers.length === 0 && (
             <p className="empty-hint">Keine Treffer (Filter prüfen?)</p>
           )}
-        </section>
+        </Card>
     );
 }
 

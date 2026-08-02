@@ -1,6 +1,8 @@
 import type { Customer } from "../types";
-import { Field, Input, Textarea, Button, MessageBar, MessageBarBody } from "@fluentui/react-components";
+import { Field, Input, Textarea, Button, MessageBar, MessageBarBody, 
+          Card, CardHeader, Text, Title2, } from "@fluentui/react-components";
 import { useState } from "react";
+
 
 type CustomerFormProps = {
   form: Omit<Customer, "id">;
@@ -34,12 +36,13 @@ const handleSave = () => {
   if (validate()) onSave();
 };
     return (
-        <section className="block form-block">
-          <h2>{isEdit ? "Bearbeiten" : "Neu"}</h2>
-          <p className="form-hint">
-          Pflichtfelder sind mit * gekennzeichnet.
-          </p>
-
+        <Card>
+            <CardHeader header={<Title2>{isEdit ? "Kunde bearbeiten" : "Neuen Kunden erfassen"}</Title2>} />
+            <Text>
+                Erfassen Sie die Kundendaten. Pflichtfelder sind mit * gekennzeichnet.  
+            </Text>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
+          </div>
           <div className="form-row">
             <Field
                 label="Name / Firma"
@@ -96,6 +99,6 @@ const handleSave = () => {
             <Button appearance="primary" onClick={handleSave}>Speichern</Button>
             <Button onClick={onCancel}>Abbrechen</Button>
           </div>
-        </section>
+        </Card>
   );
 }
