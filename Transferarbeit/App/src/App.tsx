@@ -114,7 +114,7 @@ export default function App() {
     <div className="app">
       <div className="top-bar">
         <span className="logo">KV</span>
-        <span className="title">Kundenverwaltung v0.1</span>
+        <span className="title">Kundenverwaltung v1.0</span>
         <TabList
           selectedValue={screen === "form" ? "list" : screen}
           onTabSelect={(_, data) => setScreen(data.value as Screen)}
