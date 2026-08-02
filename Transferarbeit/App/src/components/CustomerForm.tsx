@@ -1,5 +1,5 @@
 import type { Customer } from "../types";
-import { Field, Input, Textarea, Button, MessageBar, MessageBarBody, 
+import { Field, Input, Textarea, Button, 
           Card, CardHeader, Text, Title2, } from "@fluentui/react-components";
 import { useState } from "react";
 
