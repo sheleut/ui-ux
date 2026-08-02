@@ -1,4 +1,6 @@
 import type { Customer } from "../types";
+import { Field, Input, Textarea, Button, MessageBar, MessageBarBody } from "@fluentui/react-components";
+import { useState } from "react";
 
 type CustomerFormProps = {
   form: Omit<Customer, "id">;
@@ -15,7 +17,23 @@ export function CustomerForm({
   onSave,
   onCancel,
 }: CustomerFormProps) {
-  return (
+    const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+    const validate = () => {
+        const next: { name?: string; email?: string } = {};
+        if (!form.name.trim()) next.name = "Name ist erforderlich.";
+        if (!form.email.trim()) {
+            next.email = "E-Mail ist erforderlich.";
+        } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+            next.email = "Bitte eine gültige E-Mail-Adresse eingeben.";
+        }
+        setErrors(next);
+    return Object.keys(next).length === 0;
+};
+
+const handleSave = () => {
+  if (validate()) onSave();
+};
+    return (
         <section className="block form-block">
           <h2>{isEdit ? "Bearbeiten" : "Neu"}</h2>
           <p className="form-hint">
@@ -24,55 +42,62 @@ export function CustomerForm({
           </p>
 
           <div className="form-row">
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => onChange({ ...form, name: e.target.value })}
-              placeholder="Name / Firma"
-            />
-            <input
-              type="text"
+            <Field
+                label="Name / Firma"
+                required
+                validationState={errors.name ? "error" : "none"}
+                validationMessage={errors.name}
+                >
+            <Input
+                value={form.name}
+                onChange={(_, data) => onChange({ ...form, name: data.value })}
+                />
+            </Field>
+            <Field
+                label="Mail"
+                required
+                validationState={errors.email ? "error" : "none"}
+                validationMessage={errors.email}
+                > 
+              <Input  
               value={form.email}
-              onChange={(e) => onChange({ ...form, email: e.target.value })}
-              placeholder="Mail"
-            />
+              onChange={(_, data) => onChange({ ...form, email: data.value })}
+              />
+            </Field>
           </div>
           <div className="form-row">
-            <input
-              type="text"
+            <Field
+              label="Tel"
+              >
+            <Input  
               value={form.phone}
-              onChange={(e) => onChange({ ...form, phone: e.target.value })}
-              placeholder="Tel"
+              onChange={(_, data) => onChange({ ...form, phone: data.value })}
             />
-            <input
-              type="text"
+            </Field>
+            <Field
+              label="Adresse"
+              >
+            <Input
               value={form.company}
-              onChange={(e) => onChange({ ...form, company: e.target.value })}
+              onChange={(_, data) => onChange({ ...form, company: data.value })}
               placeholder="Unternehmen optional"
             />
+            </Field>
           </div>
-          <textarea
-            value={form.note}
-            onChange={(e) => onChange({ ...form, note: e.target.value })}
-            placeholder="Notiz"
-            rows={2}
-          />
-
-          <div className="form-actions">
-            <span className="save-link" onClick={onSave}>
-              speichern
-            </span>
-            <span
-              className="cancel-link"
-              onClick={() => {
-                onCancel();
-              }}
+            <Field
+              label="Adresse"
             >
-              abbrechen
-            </span>
-            <button type="button" className="ghost-btn" onClick={onSave}>
-              OK
-            </button>
+              <Textarea
+                value={form.note}
+                onChange={(_, data) => onChange({ ...form, note: data.value })}
+                placeholder="Notiz"
+                rows={2}
+              />
+            </Field>
+
+          <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
+            <Button appearance="primary" onClick={handleSave}>Speichern</Button>
+            <Button onClick={onCancel}>Abbrechen</Button>
           </div>
 
           <p className="duplicate-nav">
