@@ -37,8 +37,7 @@ const handleSave = () => {
         <section className="block form-block">
           <h2>{isEdit ? "Bearbeiten" : "Neu"}</h2>
           <p className="form-hint">
-            Felder ausfüllen und unten speichern. Pflichtfelder sind nicht
-            markiert.
+          Pflichtfelder sind mit * gekennzeichnet.
           </p>
 
           <div className="form-row">
@@ -75,22 +74,20 @@ const handleSave = () => {
             />
             </Field>
             <Field
-              label="Adresse"
+              label="Firma"
               >
             <Input
               value={form.company}
               onChange={(_, data) => onChange({ ...form, company: data.value })}
-              placeholder="Unternehmen optional"
             />
             </Field>
           </div>
             <Field
-              label="Adresse"
-            >
+              label="Notiz"
+              >
               <Textarea
                 value={form.note}
                 onChange={(_, data) => onChange({ ...form, note: data.value })}
-                placeholder="Notiz"
                 rows={2}
               />
             </Field>
@@ -99,12 +96,6 @@ const handleSave = () => {
             <Button appearance="primary" onClick={handleSave}>Speichern</Button>
             <Button onClick={onCancel}>Abbrechen</Button>
           </div>
-
-          <p className="duplicate-nav">
-            <span onClick={onCancel}>← Liste</span>
-            {" | "}
-            <span onClick={onCancel}>Startseite</span>
-          </p>
         </section>
   );
 }
