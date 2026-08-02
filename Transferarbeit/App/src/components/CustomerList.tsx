@@ -2,9 +2,10 @@ import type { Customer } from "../types";
 import {
     DataGrid, DataGridHeader, DataGridRow, DataGridHeaderCell,
     DataGridBody, DataGridCell, TableColumnDefinition, createTableColumn,
-    Button, Card, CardHeader, Title2, Input, Select,
+    Button, Card, CardHeader, Title2, Input, Select, Text
 } from "@fluentui/react-components";
 import { EditRegular, DeleteRegular, AddRegular} from "@fluentui/react-icons";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 type CustomerListProps = {
     customers: Customer[];
@@ -77,12 +78,18 @@ export function CustomerList({
     onNewCustomer,
 }: CustomerListProps) {
     const columns = buildColumns(onEdit, onDelete);
+    const isMobile = useIsMobile();
     return (
         <Card>
           <CardHeader header={<Title2>Kunden</Title2>} />
 
         <div style={{ 
-          display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "stretch" : "center",
+            gap: "8px",
+            marginBottom: "16px",
+          }}>
             <Input
               value={search}
               onChange={(_, data) => onSearchChange(data.value)}
@@ -101,6 +108,7 @@ export function CustomerList({
             </Button>
           </div>
 
+{!isMobile && (
 <DataGrid items={customers} columns={columns} sortable getRowId={(c) => c.id}>
   <DataGridHeader>
     <DataGridRow>
@@ -117,6 +125,34 @@ export function CustomerList({
     )}
   </DataGridBody>
 </DataGrid>
+)}
+
+{isMobile && (
+  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+    {customers.map((c) => (
+      <Card key={c.id}>
+        <CardHeader 
+          header={<Text weight="semibold">{c.name}</Text>}
+          description={<Text size={200}>{c.company || "-"}</Text>}
+          action={
+            <>
+              <Button
+                appearance="subtle" icon={<EditRegular />}
+                aria-label="Bearbeiten" onClick={() => onEdit(c)}
+              />
+              <Button
+                appearance="subtle" icon={<DeleteRegular />}
+                aria-label="Löschen" onClick={() => onDelete(c.id)}
+              />
+            </>
+          } 
+        />
+        <Text size={200}>{c.email}</Text>
+        <Text size={200}>{c.phone || "-"}</Text>
+      </Card>
+    ))}
+  </div>
+)}
 
           {customers.length === 0 && (
             <p className="empty-hint">Keine Treffer (Filter prüfen?)</p>
