@@ -8,6 +8,7 @@ import { CustomerForm } from "./components/CustomerForm";
 import {
   TabList, Tab, Dialog, DialogSurface, DialogBody, DialogTitle,
   DialogContent, DialogActions, Button,
+  Toaster, useToastController, Toast, ToastTitle, useId,
 } from "@fluentui/react-components";
 
 type Screen = "home" | "list" | "form" | "about";
@@ -27,6 +28,17 @@ export default function App() {
   const [editId, setEditId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("alle");
+  const toasterId = useId("toaster");
+  const { dispatchToast } = useToastController(toasterId);
+  
+  const notify = (message: string) => {
+    dispatchToast(
+      <Toast>
+        <ToastTitle>{message}</ToastTitle>
+      </Toast>,
+      { intent: "success", timeout: 3000 }
+    );
+  };
 
   const nextId = () =>
     customers.reduce((max, c) => Math.max(max, c.id), 0) + 1;
@@ -45,8 +57,8 @@ export default function App() {
                 note: form.note
               }
             : c
-        )
-      );
+      ));
+      notify(`Kunde "${form.name}" wurde aktualisiert.`);
     } else {
       setCustomers((list) => [
         ...list,
@@ -59,6 +71,7 @@ export default function App() {
           note: form.note
         }
       ]);
+      notify(`Kunde "${form.name}" wurde hinzugefügt.`);
     }
     setForm(emptyForm);
     setEditId(null);
@@ -81,6 +94,7 @@ export default function App() {
 
   const removeCustomer = (id: number) => {
     setCustomers((list) => list.filter((c) => c.id !== id));
+    notify(`Kunde wurde gelöscht.`);
   };
 
   const filtered = customers.filter((c) => {
@@ -184,6 +198,8 @@ export default function App() {
     </DialogBody>
   </DialogSurface>
 </Dialog>
+<Toaster toasterId={toasterId} 
+    />
     </div>
   );
 }
