@@ -39,19 +39,3 @@
   font-size: 14px;
   color: #e74c3c;
 }
-
-.extraActions {
-  display: flex;
-  gap: 8px;
-  margin-top: -30px;
-  margin-left: 10px;
-}
-
-.btnBack {
-  background-color: #34495e !important;
-}
-
-.btnApply {
-  background-color: #1abc9c !important;
-  font-size: 11px;
-}

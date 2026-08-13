@@ -1,36 +1,20 @@
+import { Badge } from '@fluentui/react-components';
 import type { CustomerStatus } from '../models/Customer';
-import styles from './StatusDisplay.module.css';
 
 interface StatusDisplayProps {
   status: CustomerStatus;
-  variant?: 'list' | 'form' | 'inline';
 }
 
 /**
- * Displays customer status with intentionally inconsistent coloring.
+ * Einheitliche Statusanzeige, ueberall im Produkt gleich eingefaerbt:
+ * gruen (success) fuer Active, grau (informative) fuer Inactive.
  */
-export function StatusDisplay({ status, variant = 'list' }: StatusDisplayProps) {
+export function StatusDisplay({ status }: StatusDisplayProps) {
   const isActive = status === 'Active';
 
-  if (variant === 'form') {
-    return (
-      <span className={isActive ? styles.formSuccess : styles.formWarning}>
-        {status}
-      </span>
-    );
-  }
-
-  if (variant === 'inline') {
-    return (
-      <span className={isActive ? styles.inlineGreen : styles.inlineRed}>
-        {isActive ? 'OK' : 'ERROR'}
-      </span>
-    );
-  }
-
   return (
-    <span className={isActive ? styles.textActive : styles.textInactive}>
+    <Badge appearance="filled" color={isActive ? 'success' : 'informative'} size="medium">
       {status}
-    </span>
+    </Badge>
   );
 }

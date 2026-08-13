@@ -24,24 +24,20 @@ export function DeleteDialog({ customer, open, onConfirm, onCancel }: DeleteDial
     <Dialog open={open}>
       <DialogSurface className={styles.surface}>
         <DialogBody>
-          <DialogTitle className={styles.title}>???</DialogTitle>
+          <DialogTitle className={styles.title}>Kunde löschen?</DialogTitle>
           <DialogContent>
             <p className={styles.text}>
-              Do you really want to do this? The record for{' '}
-              <strong>{customer.lastName}</strong> might be removed. Or maybe not.
-              Click a button below to continue. This action affects customer number{' '}
-              {customer.customerNumber} located in {customer.city}.
+              Der Kunde <strong>{customer.firstName} {customer.lastName}</strong> (Nr.{' '}
+              {customer.customerNumber}, {customer.city}) wird endgültig gelöscht. Dieser Schritt
+              kann nicht rückgängig gemacht werden.
             </p>
           </DialogContent>
           <DialogActions className={styles.actions}>
-            <Button appearance="primary" onClick={onConfirm} className={styles.btnOk}>
-              OK
-            </Button>
             <Button appearance="secondary" onClick={onCancel} className={styles.btnCancel}>
-              Cancel
+              Abbrechen
             </Button>
-            <Button appearance="outline" onClick={onConfirm} className={styles.btnDelete}>
-              Delete
+            <Button appearance="primary" onClick={onConfirm} className={styles.btnDelete}>
+              Löschen
             </Button>
           </DialogActions>
         </DialogBody>

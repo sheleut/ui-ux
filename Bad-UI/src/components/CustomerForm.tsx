@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import {
   Button,
+  Card,
+  CardHeader,
   Dropdown,
+  Field,
   Input,
   Option,
   Radio,
   RadioGroup,
+  Spinner,
+  Subtitle2,
 } from '@fluentui/react-components';
 import type { CustomerFormData, CustomerStatus } from '../models/Customer';
 import { hasValidationErrors, validateCustomer, type ValidationErrors } from '../utils/validation';
@@ -20,10 +25,10 @@ interface CustomerFormProps {
 }
 
 const countryOptions = [
-  'Germany', 'Switzerland', 'France', 'Italy', 'Poland', 'United Kingdom',
-  'Netherlands', 'Czech Republic', 'Spain', 'Austria', 'Sweden', 'Norway',
-  'Portugal', 'Denmark', 'Belgium', 'Ireland', 'Greece', 'Hungary',
-  'Slovakia', 'Cyprus',
+  'Austria', 'Belgium', 'Cyprus', 'Czech Republic', 'Denmark', 'France',
+  'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Netherlands',
+  'Norway', 'Poland', 'Portugal', 'Slovakia', 'Spain', 'Sweden',
+  'Switzerland', 'United Kingdom',
 ];
 
 export function CustomerForm({ initialData, submitLabel, onSubmit, onCancel }: CustomerFormProps) {
@@ -53,139 +58,123 @@ export function CustomerForm({ initialData, submitLabel, onSubmit, onCancel }: C
     }
   };
 
+  // Zeigt eine Fehlermeldung nur an, wenn das Formular bereits abgeschickt wurde.
+  const fieldError = (key: keyof ValidationErrors) => {
+    const message = errors[key];
+    return submitted && message
+      ? { validationState: 'error' as const, validationMessage: message }
+      : {};
+  };
+
   return (
     <div className={styles.form}>
-      <div className={styles.rowWide}>
-        <Input
-          value={formData.company}
-          onChange={(_e, data) => updateField('company', data.value)}
-          placeholder="Firma eingeben..."
-          className={styles.inputWide}
-        />
-        <span className={styles.labelBelow}>COMPANY NAME</span>
-        {submitted && errors.company && <span className={styles.error}>{errors.company}</span>}
-      </div>
-
-      <div className={styles.rowSplit}>
-        <div className={styles.fieldGroup}>
-          <span className={styles.labelAbove}>customer number</span>
-          <Input
-            value={formData.customerNumber}
-            onChange={(_e, data) => updateField('customerNumber', data.value)}
-            className={styles.inputNarrow}
-          />
-          {submitted && errors.customerNumber && <span className={styles.errorSmall}>{errors.customerNumber}</span>}
+      <Card className={styles.card}>
+        <CardHeader header={<Subtitle2>Firma & Kontakt</Subtitle2>} />
+        <div className={styles.row}>
+          <Field label="Firma" className={styles.fieldWide} {...fieldError('company')}>
+            <Input
+              value={formData.company}
+              onChange={(_e, data) => updateField('company', data.value)}
+              placeholder="Firma eingeben..."
+            />
+          </Field>
         </div>
-
-        <div className={styles.fieldGroupRight}>
-          <Input
-            value={formData.phone}
-            onChange={(_e, data) => updateField('phone', data.value)}
-            placeholder="+49 ..."
-            className={styles.inputMedium}
-          />
-          <span className={styles.labelBelow}>Telefon</span>
-          {submitted && errors.phone && <span className={styles.error}>{errors.phone}</span>}
+        <div className={styles.row}>
+          <Field label="Kundennummer" className={styles.fieldSmall} {...fieldError('customerNumber')}>
+            <Input
+              value={formData.customerNumber}
+              onChange={(_e, data) => updateField('customerNumber', data.value)}
+            />
+          </Field>
+          <Field label="Telefon" className={styles.fieldMedium} {...fieldError('phone')}>
+            <Input
+              value={formData.phone}
+              onChange={(_e, data) => updateField('phone', data.value)}
+              placeholder="+49 ..."
+            />
+          </Field>
         </div>
-      </div>
+      </Card>
 
-      <div className={styles.rowTriple}>
-        <div>
-          <Input
-            value={formData.lastName}
-            onChange={(_e, data) => updateField('lastName', data.value)}
-            placeholder="Nachname"
-            className={styles.inputSmall}
-          />
-          {submitted && errors.lastName && <span className={styles.error}>{errors.lastName}</span>}
+      <Card className={styles.card}>
+        <CardHeader header={<Subtitle2>Personendaten</Subtitle2>} />
+        <div className={styles.row}>
+          <Field label="Nachname" className={styles.fieldSmall} {...fieldError('lastName')}>
+            <Input
+              value={formData.lastName}
+              onChange={(_e, data) => updateField('lastName', data.value)}
+              placeholder="Nachname"
+            />
+          </Field>
+          <Field label="Vorname" className={styles.fieldSmall} {...fieldError('firstName')}>
+            <Input
+              value={formData.firstName}
+              onChange={(_e, data) => updateField('firstName', data.value)}
+            />
+          </Field>
+          <Field label="E-Mail" className={styles.fieldMedium} {...fieldError('email')}>
+            <Input
+              value={formData.email}
+              onChange={(_e, data) => updateField('email', data.value)}
+              placeholder="email@example.com"
+            />
+          </Field>
         </div>
+      </Card>
 
-        <div className={styles.fieldMiddle}>
-          <span className={styles.labelInline}>Vorname / First Name</span>
-          <Input
-            value={formData.firstName}
-            onChange={(_e, data) => updateField('firstName', data.value)}
-            className={styles.inputLarge}
-          />
-          {submitted && errors.firstName && <span className={styles.error}>{errors.firstName}</span>}
+      <Card className={styles.card}>
+        <CardHeader header={<Subtitle2>Adresse</Subtitle2>} />
+        <div className={styles.row}>
+          <Field label="Stadt" className={styles.fieldMedium} {...fieldError('city')}>
+            <Input
+              value={formData.city}
+              onChange={(_e, data) => updateField('city', data.value)}
+            />
+          </Field>
+          <Field label="Land" className={styles.fieldMedium} {...fieldError('country')}>
+            <Dropdown
+              value={formData.country}
+              selectedOptions={formData.country ? [formData.country] : []}
+              onOptionSelect={(_e, data) => updateField('country', data.optionValue ?? '')}
+            >
+              {countryOptions.map((country) => (
+                <Option key={country} value={country}>
+                  {country}
+                </Option>
+              ))}
+            </Dropdown>
+          </Field>
         </div>
+      </Card>
 
-        <div className={styles.fieldEmail}>
-          <Input
-            value={formData.email}
-            onChange={(_e, data) => updateField('email', data.value)}
-            placeholder="email@example.com"
-            className={styles.inputEmail}
-          />
-          {submitted && errors.email && <span className={styles.errorRed}>{errors.email}</span>}
-        </div>
-      </div>
-
-      <div className={styles.rowLocation}>
-        <div className={styles.cityBlock}>
-          <span className={styles.labelTiny}>city</span>
-          <Input
-            value={formData.city}
-            onChange={(_e, data) => updateField('city', data.value)}
-            className={styles.inputCity}
-          />
-          {submitted && errors.city && <span className={styles.error}>{errors.city}</span>}
-        </div>
-
-        <div className={styles.countryBlock}>
-          <Dropdown
-            value={formData.country}
-            selectedOptions={formData.country ? [formData.country] : []}
-            onOptionSelect={(_e, data) => updateField('country', data.optionValue ?? '')}
-            className={styles.dropdown}
-          >
-            {countryOptions.map((country) => (
-              <Option key={country} value={country}>
-                {country}
-              </Option>
-            ))}
-          </Dropdown>
-          <span className={styles.labelBelow}>Land</span>
-          {submitted && errors.country && <span className={styles.error}>{errors.country}</span>}
-        </div>
-      </div>
-
-      <div className={styles.statusSection}>
+      <Card className={styles.card}>
+        <CardHeader header={<Subtitle2>Status</Subtitle2>} />
         <p className={styles.statusHelp}>
-          Please select whether this customer account should be considered active or inactive
-          in the system. Active customers can receive invoices. Inactive customers are archived.
+          Aktive Kunden erhalten Rechnungen, inaktive Kunden werden archiviert.
         </p>
-        <RadioGroup
-          value={formData.status}
-          onChange={(_e, data) => updateField('status', data.value as CustomerStatus)}
-          layout="horizontal"
-        >
-          <Radio value="Active" label="Active" />
-          <Radio value="Inactive" label="Inactive" />
-        </RadioGroup>
-        <StatusDisplay status={formData.status} variant="form" />
-        <StatusDisplay status={formData.status} variant="inline" />
-      </div>
+        <div className={styles.statusRow}>
+          <RadioGroup
+            value={formData.status}
+            onChange={(_e, data) => updateField('status', data.value as CustomerStatus)}
+            layout="horizontal"
+          >
+            <Radio value="Active" label="Active" />
+            <Radio value="Inactive" label="Inactive" />
+          </RadioGroup>
+          <StatusDisplay status={formData.status} />
+        </div>
+      </Card>
 
       {submitted && hasValidationErrors(errors) && (
-        <p className={styles.globalError}>Some fields contain errors. Please check your input.</p>
+        <p className={styles.globalError}>Bitte prüfen Sie die markierten Felder.</p>
       )}
 
       <div className={styles.actions}>
-        <Button
-          appearance="primary"
-          size="large"
-          onClick={handleSubmit}
-          disabled={isSaving}
-          className={styles.btnSubmit}
-        >
-          {submitLabel}
+        <Button appearance="secondary" onClick={onCancel} disabled={isSaving}>
+          Abbrechen
         </Button>
-        <Button appearance="secondary" size="small" onClick={onCancel} className={styles.btnCancel}>
-          Cancel
-        </Button>
-        <Button appearance="outline" size="medium" onClick={handleSubmit} disabled={isSaving} className={styles.btnStore}>
-          Store
+        <Button appearance="primary" onClick={handleSubmit} disabled={isSaving} className={styles.btnSubmit}>
+          {isSaving ? <Spinner size="tiny" /> : submitLabel}
         </Button>
       </div>
     </div>

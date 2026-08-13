@@ -42,8 +42,7 @@ export function EditCustomerPage() {
       </div>
 
       <p className={styles.hint}>
-        Modify the customer details. All fields must be filled in correctly before saving.
-        Validation occurs when you click Save or Apply.
+        Alle Felder müssen korrekt ausgefüllt sein, bevor gespeichert werden kann.
       </p>
 
       <CustomerForm
@@ -52,15 +51,6 @@ export function EditCustomerPage() {
         onSubmit={handleSubmit}
         onCancel={() => navigate('/')}
       />
-
-      <div className={styles.extraActions}>
-        <Button appearance="secondary" size="large" onClick={() => navigate('/')} className={styles.btnBack}>
-          zurück
-        </Button>
-        <Button appearance="primary" size="small" onClick={() => handleSubmit(formData)} className={styles.btnApply}>
-          Apply
-        </Button>
-      </div>
     </div>
   );
 }
